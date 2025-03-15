@@ -9,8 +9,8 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
     ids1, embeddings1 = data1["ids"], data1["embeddings"]
 
     # Extract PDB keys and corresponding embeddings from file2
-    raw_ids2 = list(data2.keys())  # The PDB filenames are the keys
-    ids2 = [id_.replace(".pdb", "") for id_ in raw_ids2]  # Strip ".pdb"
+    raw_ids2 = list(data2.keys()) 
+    ids2 = [id_.replace(".pdb", "") for id_ in raw_ids2]  
     embeddings2_dict = {id_.replace(".pdb", ""): data2[id_] for id_ in raw_ids2}  # Updated dict
 
     # Print first few IDs for debugging
@@ -22,13 +22,13 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
     num_matching = len(common_ids)  # Count matching embeddings
     print(f"Number of matching embeddings: {num_matching}")
 
-    # Print a few common IDs
+
     if num_matching > 0:
         print("First few common IDs:", list(common_ids)[:10])
     else:
         print("No common IDs found. Check if file formats match.")
 
-    # Handle the case when no common IDs are found
+   
     if num_matching == 0:
         return 0
 
