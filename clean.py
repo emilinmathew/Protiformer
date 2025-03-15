@@ -4,16 +4,13 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
     # Load the data from both files
     data1 = torch.load(file1)
     data2 = torch.load(file2)  # data2 keys are the PDB filenames
-
-    # Extract ids and embeddings from file1
+    
     ids1, embeddings1 = data1["ids"], data1["embeddings"]
 
-    # Extract PDB keys and corresponding embeddings from file2
     raw_ids2 = list(data2.keys()) 
     ids2 = [id_.replace(".pdb", "") for id_ in raw_ids2]  
     embeddings2_dict = {id_.replace(".pdb", ""): data2[id_] for id_ in raw_ids2}  # Updated dict
 
-    # Print first few IDs for debugging
     print("First few IDs from file1:", ids1[:10])  # Print first 10 IDs
     print("First few processed IDs from file2:", ids2[:10])  # Print first 10 stripped PDB keys
 
