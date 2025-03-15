@@ -16,7 +16,7 @@ class TextProcessor:
         # Linear transformation layer
         self.text2latent = nn.Linear(self.text_dim, self.emb_dim)
 
-        # Load pre-trained weights if provided
+        
         if checkpoint_dir:
             text_ckpt_path = "text_model.pth"
             text2latent_ckpt_path = "text2latent_model.pth"
@@ -27,11 +27,10 @@ class TextProcessor:
             
             self.text2latent.load_state_dict(torch.load(text2latent_ckpt_path, map_location=self.device))
 
-        # Move to device
+      
         self.text_model.to(self.device)
         self.text2latent.to(self.device)
 
-        # Set to eval mode
         self.text_model.train()
         self.text2latent.train()
 
@@ -43,9 +42,8 @@ class TextProcessor:
         
         with torch.no_grad():
             with autocast():  # Enable mixed precision
-                text_embeddings = self.text_model(**inputs).last_hidden_state[:, 0, :]  # CLS token embedding
-        
-        # Free up memory
+                text_embeddings = self.text_model(**inputs).last_hidden_state[:, 0, :] 
+    
         del inputs
         torch.cuda.empty_cache()
         
@@ -55,14 +53,12 @@ class TextProcessor:
 # Initialize text processor
 text_processor = TextProcessor(checkpoint_dir="/Users/divya/Downloads/", device=None, emb_dim=256)
 
-# Read from file
 input_file = "filtered_text_sequence.txt"
 output_file = "filtered_output_embeddings.pt"
 
 embeddings_list = []
 ids_list = []  # Store matching IDs
 
-# Reduce batch size to avoid CUDA out of memory errors
 chunk_size = 2  # Process 2 texts at a time
 
 with open(input_file, "r", encoding="utf-8") as f:
@@ -80,10 +76,8 @@ with open(input_file, "r", encoding="utf-8") as f:
             batch_texts.append(description)
             batch_ids.append(current_id)
         
-        # Process the batch of texts
         embeddings = text_processor.encode_text(batch_texts)
         
-        # Move embeddings to CPU before clearing GPU memory
         embeddings_cpu = embeddings.cpu()
         embeddings_list.append(embeddings_cpu)
         ids_list.extend(batch_ids)
