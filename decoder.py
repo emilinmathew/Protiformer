@@ -84,7 +84,7 @@ class ProteinEditDecoder(nn.Module):
         self.aa_pred = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, 20)  # 20 standard amino acids
+            nn.Linear(hidden_dim, 20) 
         )
     
     def forward(self, structure_emb, text_emb, node_features, edge_index, edit_instructions=None, node_mask=None):
@@ -654,16 +654,16 @@ def generate_pdb(coords, aa_probs, chain_id='A', output_file="output.pdb"):
         f.write("REMARK    Predicted structure\n")
         f.write("REMARK    Coordinates are in Angstroms\n")
         
-        # Write atom records
+        #  atom records
         atom_number = 1
         residue_number = 1
         for i, (aa, (x, y, z)) in enumerate(zip(predicted_aa, coords)):
-            # Write ATOM record for the backbone CA atom
+            #ATOM record for the backbone CA atom
             f.write(f"ATOM  {atom_number:5d}  CA  {aa:3s} {chain_id}{residue_number:4d}    {x:8.3f}{y:8.3f}{z:8.3f}  1.00  0.00           C\n")
             atom_number += 1
             residue_number += 1
         
-        # Write TER record to mark the end of the chain
+        #TER record to mark the end of the chain
         f.write("TER\n")
         f.write("END\n")
 
