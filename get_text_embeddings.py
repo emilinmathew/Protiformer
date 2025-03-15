@@ -9,7 +9,7 @@ class TextProcessor:
         self.text_dim = 768  # SciBERT output dimension
         self.emb_dim = emb_dim
 
-        # Load tokenizer and model
+       
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir="../data/temp_pretrained_SciBert")
         self.text_model = AutoModel.from_pretrained(model_name, cache_dir="../data/temp_pretrained_SciBert")
         
@@ -89,7 +89,7 @@ with open(input_file, "r", encoding="utf-8") as f:
         gc.collect()
         torch.cuda.empty_cache()
 
-# Save filtered embeddings and IDs to a file
+# Save filtered embeddings and IDs 
 if embeddings_list:
     embeddings_tensor = torch.cat(embeddings_list, dim=0)
     data_dict = {"ids": ids_list, "embeddings": embeddings_tensor}
