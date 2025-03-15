@@ -9,14 +9,14 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
 
     raw_ids2 = list(data2.keys()) 
     ids2 = [id_.replace(".pdb", "") for id_ in raw_ids2]  
-    embeddings2_dict = {id_.replace(".pdb", ""): data2[id_] for id_ in raw_ids2}  # Updated dict
+    embeddings2_dict = {id_.replace(".pdb", ""): data2[id_] for id_ in raw_ids2}  
 
     print("First few IDs from file1:", ids1[:10])  # Print first 10 IDs
-    print("First few processed IDs from file2:", ids2[:10])  # Print first 10 stripped PDB keys
+    print("First few processed IDs from file2:", ids2[:10]) 
 
     # Find common IDs
     common_ids = set(ids1) & set(ids2)
-    num_matching = len(common_ids)  # Count matching embeddings
+    num_matching = len(common_ids)
     print(f"Number of matching embeddings: {num_matching}")
 
 
@@ -29,7 +29,7 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
     if num_matching == 0:
         return 0
 
-    # Create index mappings for filtering
+   
     id_to_index1 = {id_: i for i, id_ in enumerate(ids1)}
 
     # Filter IDs and embeddings
@@ -43,9 +43,8 @@ def clean_embeddings(file1, file2, output_file1, output_file2):
 
     print(f"Cleaned data saved to {output_file1} and {output_file2}")
 
-    return num_matching  # Return the count of matching embeddings
+    return num_matching 
 
-# Example usage:
 num_matching = clean_embeddings("filtered_output_embeddings.pt", "structure_embeddings_final.pt", 
                                 "cleaned_filtered_output_embedding.pt", "cleaned_structure_embeddings_final.pt")
 print(f"Returned matching embeddings count: {num_matching}")
