@@ -2,8 +2,7 @@ import torch
 import torch.nn as nn
 from transformers import AutoModel, AutoTokenizer
 from torch.cuda.amp import autocast
-import gc  # For garbage collection
-
+import gc 
 class TextProcessor:
     def __init__(self, model_name='allenai/scibert_scivocab_uncased', emb_dim=256, checkpoint_dir=None, device=None):
         self.device = device if device else ('cuda' if torch.cuda.is_available() else 'cpu')
