@@ -51,7 +51,6 @@ torch.save({"ids": structure_ids, "projected_struct": projected_struct}, "projec
 
 print(" Projected embeddings saved!")
 
-# Task 1 - Compute similarity matrix
 # Convert embeddings to numpy
 
 text_repr = projected_text.clone().detach()
@@ -61,11 +60,8 @@ struct_repr = projected_struct.clone().detach()
 text_repr = F.normalize(text_repr, p=2, dim=-1)
 struct_repr = F.normalize(struct_repr, p=2, dim=-1)
 
-# Task 2 - Visualize embeddings
 
 # Reduce dimensionality
-
-# **Reduce dimensionality with t-SNE**
 
 print(" Loading embeddings")
 text_repr_np = text_repr.cpu().numpy()
