@@ -19,26 +19,23 @@ class JointProjectionHead(nn.Module):
         )
 
     def forward(self, text_emb, struct_emb):
-        joint_emb = torch.cat([text_emb, struct_emb], dim=-1)  # Concatenate along feature dim
+        joint_emb = torch.cat([text_emb, struct_emb], dim=-1)  
         return self.projection(joint_emb)
 
-# Load model & move to correct device
+
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 model = JointProjectionHead().to(device)
 
-# Load best model weights
 model.eval()
 
-# Load new text & structure embeddings
 text_embeddings_data = torch.load("cleaned_filtered_output_embedding.pt")
 new_text_embeddings = text_embeddings_data["embeddings"].to(torch.float32).to(device)
-text_ids = text_embeddings_data["ids"]  # Assuming the IDs are stored under the key "ids"
+text_ids = text_embeddings_data["ids"] 
 
 structure_embeddings_data = torch.load("cleaned_structure_embeddings_final.pt")
 new_structure_embeddings_dict = structure_embeddings_data["embeddings"].to(torch.float32)
 new_structure_embeddings = torch.stack([v.squeeze(0) for v in new_structure_embeddings_dict]).to(device)
-structure_ids = structure_embeddings_data["ids"]  # Assuming the IDs are stored under the key "ids"
-
+structure_ids = structure_embeddings_data["ids"] 
 with torch.no_grad():
     projected_text = model(new_text_embeddings, new_structure_embeddings)
     projected_struct = model(new_structure_embeddings, new_text_embeddings)
@@ -51,38 +48,31 @@ torch.save({"ids": structure_ids, "projected_struct": projected_struct}, "projec
 
 print(" Projected embeddings saved!")
 
-# Convert embeddings to numpy
 
 text_repr = projected_text.clone().detach()
 struct_repr = projected_struct.clone().detach()
 
-# Normalize embeddings
 text_repr = F.normalize(text_repr, p=2, dim=-1)
 struct_repr = F.normalize(struct_repr, p=2, dim=-1)
-
-
-# Reduce dimensionality
 
 print(" Loading embeddings")
 text_repr_np = text_repr.cpu().numpy()
 struct_repr_np = struct_repr.cpu().numpy()
 
 subset_size = 100
-indices = np.random.choice(len(text_repr_np), subset_size, replace=False)  # Randomly select 100 samples
+indices = np.random.choice(len(text_repr_np), subset_size, replace=False) 
 
 # Extract only the subset
 text_subset = text_repr_np[indices]
 struct_subset = struct_repr_np[indices]
 
-# Reduce dimensions first with PCA
 pca = PCA(n_components=50)  # Reduce to 50 dimensions first
-text_struct_combined = np.vstack([text_subset, struct_subset])  # Stack only the subset
-pca_embeddings = pca.fit_transform(text_struct_combined)  # Apply PCA only on the subset
+text_struct_combined = np.vstack([text_subset, struct_subset])  
+pca_embeddings = pca.fit_transform(text_struct_combined)  
 
 # Initialize t-SNE
 tsne = TSNE(n_components=2, perplexity=30, random_state=42, method="barnes_hut", angle=0.5)
 
-# Apply t-SNE to the PCA-reduced subset
 reduced_embeddings = tsne.fit_transform(pca_embeddings)
 print(text_subset.shape, struct_subset.shape, reduced_embeddings.shape)
 
@@ -110,7 +100,7 @@ def fast_pairwise_similarity(text_emb, struct_emb, num_samples=1000):
     text_subset = text_emb[indices]
     struct_subset = struct_emb[indices]
     
-    similarity_scores = (text_subset * struct_subset).sum(dim=-1).cpu().numpy()  # Compute cosine similarity
+    similarity_scores = (text_subset * struct_subset).sum(dim=-1).cpu().numpy() 
     return similarity_scores
 
 print(" Computing pairwise similarity for a subset...")
