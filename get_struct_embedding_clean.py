@@ -399,7 +399,7 @@ def create_graphs_batch(batch_data):
         print(f"Starting batch with {torch.cuda.memory_allocated(0) / 1024**2:.2f} MB GPU memory used")
     
     # Process in GPU-friendly batches
-    optimal_batch_size = 8  # Adjust based on your GPU memory and graph sizes
+    optimal_batch_size = 8 
     
     for i in range(0, len(batch_data), optimal_batch_size):
         sub_batch = batch_data[i:i+optimal_batch_size]
@@ -705,7 +705,6 @@ if __name__ == "__main__":
     # Print GPU information
     print_gpu_info()
   
-    # Call this at the start of your main function
     monitor_thread = start_gpu_monitoring()
 
     
