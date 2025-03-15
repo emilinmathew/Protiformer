@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader, random_split, TensorDataset
 from torch.utils.tensorboard import SummaryWriter
 import atexit
-import optuna  # Import Optuna for Bayesian Optimization
 
 device = ("mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu")
 
